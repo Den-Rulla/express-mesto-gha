@@ -59,6 +59,9 @@ const deleteCard = (req, res, next) => {
         });
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Bad request' });
+      }
       return res.status(500).send({ message: 'Server Error' });
     });
 };
@@ -75,6 +78,9 @@ const putLikeCard = (req, res) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Bad request' });
+      }
       return res.status(500).send({ message: 'Server Error' });
     });
 };
@@ -91,6 +97,9 @@ const deleteLikeCard = (req, res) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Bad request' });
+      }
       return res.status(500).send({ message: 'Server Error' });
     });
 };

@@ -55,7 +55,7 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
-  return User.findByIdAndUpdate(userId, { name, about }, { new: true })
+  return User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
@@ -63,6 +63,7 @@ const updateUser = (req, res) => {
       return res.status(200).send(user);
     })
     .catch((err) => {
+      console.log(err);
       if (err.name === 'ValidationError') {
         return res.status(400).send({
           message: `${Object.values(err.errors)
@@ -78,7 +79,7 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
 
-  return User.findByIdAndUpdate(userId, { avatar }, { new: true })
+  return User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
