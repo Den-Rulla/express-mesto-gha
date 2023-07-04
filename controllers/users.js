@@ -63,7 +63,6 @@ const updateUser = (req, res) => {
       return res.status(200).send(user);
     })
     .catch((err) => {
-      console.log(err);
       if (err.name === 'ValidationError') {
         return res.status(400).send({
           message: `${Object.values(err.errors)
