@@ -3,6 +3,12 @@
 /* eslint-disable arrow-body-style */
 
 const Card = require('../models/card');
+const {
+  BAD_REQUEST_ERROR,
+  FORBIDDEN_ERROR,
+  NOT_FOUND_ERROR,
+  INTERNAL_SERVER_ERROR,
+} = require('../utils/errors');
 
 const getAllCards = (req, res) => {
   return Card.find({})
@@ -10,7 +16,7 @@ const getAllCards = (req, res) => {
       return res.status(200).send(cards);
     })
     .catch((err) => {
-      return res.status(500).send({ message: 'Server Error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
     });
 };
 
@@ -23,13 +29,13 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({
+        return res.status(BAD_REQUEST_ERROR).send({
           message: `${Object.values(err.errors)
             .map((err) => err.message)
             .join(', ')}`,
         });
       }
-      return res.status(500).send({ message: 'Server Error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
     });
 };
 
@@ -40,16 +46,16 @@ const deleteCard = (req, res, next) => {
   return Card.findById(cardId)
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Card not found' });
+        return res.status(NOT_FOUND_ERROR).send({ message: 'Card not found' });
       }
       if (card.owner.toString() !== userId) {
-        return res.status(400).send({ message: 'No rights to delete. You can only delete your cards' });
+        return res.status(FORBIDDEN_ERROR).send({ message: 'No rights to delete. You can only delete your cards' });
       }
       return Card.deleteOne(card)
         .then((card) => res.status(200).send(card))
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            return res.status(400).send({
+            return res.status(BAD_REQUEST_ERROR).send({
               message: `${Object.values(err.errors)
                 .map((err) => err.message)
                 .join(', ')}`,
@@ -60,9 +66,9 @@ const deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Bad request' });
+        return res.status(BAD_REQUEST_ERROR).send({ message: 'Bad request' });
       }
-      return res.status(500).send({ message: 'Server Error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
     });
 };
 
@@ -73,15 +79,15 @@ const putLikeCard = (req, res) => {
   return Card.findByIdAndUpdate(cardId, { $addToSet: { likes: userId } }, { new: true })
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Card not found' });
+        return res.status(NOT_FOUND_ERROR).send({ message: 'Card not found' });
       }
       return res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Bad request' });
+        return res.status(BAD_REQUEST_ERROR).send({ message: 'Bad request' });
       }
-      return res.status(500).send({ message: 'Server Error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
     });
 };
 
@@ -92,15 +98,15 @@ const deleteLikeCard = (req, res) => {
   return Card.findByIdAndUpdate(cardId, { $pull: { likes: userId } }, { new: true })
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Card not found' });
+        return res.status(NOT_FOUND_ERROR).send({ message: 'Card not found' });
       }
       return res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Bad request' });
+        return res.status(BAD_REQUEST_ERROR).send({ message: 'Bad request' });
       }
-      return res.status(500).send({ message: 'Server Error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
     });
 };
 
