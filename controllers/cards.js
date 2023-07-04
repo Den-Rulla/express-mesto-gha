@@ -33,7 +33,7 @@ const createCard = (req, res) => {
     });
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
@@ -55,6 +55,7 @@ const deleteCard = (req, res) => {
                 .join(', ')}`,
             });
           }
+          return next(err);
         });
     })
     .catch((err) => {
