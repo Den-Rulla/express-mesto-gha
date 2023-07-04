@@ -44,6 +44,9 @@ const getUserById = (req, res) => {
       return res.status(200).send(user);
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Bad request' });
+      }
       return res.status(500).send({ message: 'Server Error' });
     });
 };
@@ -52,7 +55,7 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
-  return User.findByIdAndUpdate(userId, { name, about }, { upsert: true })
+  return User.findByIdAndUpdate(userId, { name, about }, { new: true })
     .then((user) => {
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
@@ -75,7 +78,7 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
 
-  return User.findByIdAndUpdate(userId, { avatar })
+  return User.findByIdAndUpdate(userId, { avatar }, { new: true })
     .then((user) => {
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
