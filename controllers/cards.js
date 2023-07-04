@@ -54,13 +54,6 @@ const deleteCard = (req, res, next) => {
       return Card.deleteOne(card)
         .then((card) => res.status(200).send(card))
         .catch((err) => {
-          if (err.name === 'ValidationError') {
-            return res.status(BAD_REQUEST_ERROR).send({
-              message: `${Object.values(err.errors)
-                .map((err) => err.message)
-                .join(', ')}`,
-            });
-          }
           return next(err);
         });
     })
