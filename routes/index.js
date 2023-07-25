@@ -1,11 +1,15 @@
 const router = require('express').Router();
 const usersRouter = require('./users');
 const cardsRouter = require('./cards');
-const { NOT_FOUND_ERROR } = require('../utils/errors');
+const signinRouter = require('./signin');
+const signupRouter = require('./signup');
+const NotFoundErr = require('../errors/NotFoundErr');
 
+router.use(signinRouter);
+router.use(signupRouter);
 router.use(usersRouter);
 router.use(cardsRouter);
 
-router.use('*', (req, res) => res.status(NOT_FOUND_ERROR).send({ message: 'Page Not Found' }));
+router.use('*', (req, res, next) => { next(new NotFoundErr('Page not found')); });
 
 module.exports = router;
