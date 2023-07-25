@@ -13,12 +13,11 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, 'secret-key');
+    payload = jwt.verify(token, 'some-secret-key');
   } catch (err) {
     next(new UnauthorizedErr('Unauthorized Error'));
   }
 
   req.user = payload;
-
   return next();
 };

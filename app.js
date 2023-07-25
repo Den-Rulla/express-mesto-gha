@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { INTERNAL_SERVER_ERROR } = require('./utils/constants');
+// const { INTERNAL_SERVER_ERROR } = require('./utils/constants');
 
 const routes = require('./routes/index');
 
@@ -29,15 +29,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(routes);
 
-app.use((err, req, res, next) => {
-  const { statusCode = INTERNAL_SERVER_ERROR, message } = err;
+// app.use((err, req, res, next) => {
+//   const { statusCode = INTERNAL_SERVER_ERROR, message } = err;
 
-  res
-    .status(statusCode)
-    .send({ message: statusCode === INTERNAL_SERVER_ERROR ? 'Internal Server Error' : message });
+//   res
+//     .status(statusCode)
+//     .send({ message: statusCode === INTERNAL_SERVER_ERROR ? 'Internal Server Error' : message });
 
-  next();
-});
+//   next();
+// });
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
