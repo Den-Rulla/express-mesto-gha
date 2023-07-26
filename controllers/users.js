@@ -31,7 +31,13 @@ const createUser = (req, res, next) => {
         email,
         password: hash,
       })
-        .then((newUser) => res.status(CREATED_CODE).send(newUser))
+        // .then((newUser) => res.status(CREATED_CODE).send({ data: newUser }))
+        .then((newUser) => {
+          const { _id } = newUser;
+          res.status(CREATED_CODE).send({
+            name, about, avatar, email, _id,
+          });
+        })
         .catch((err) => {
           if (err.code === 11000) {
             return next(new ConflictErr('The user with this email is already registered'));
