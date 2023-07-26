@@ -9,6 +9,8 @@ const NotFoundErr = require('../errors/NotFoundErr');
 const BadRequestErr = require('../errors/BadRequestErr');
 const ConflictErr = require('../errors/ConflictErr');
 
+// const { NODE_ENV, JWT_SECRET } = process.env;
+
 const getAllUsers = (req, res, next) => User.find({})
   .then((users) => res.status(OK_CODE).send(users))
   .catch(next);
@@ -31,7 +33,7 @@ const createUser = (req, res, next) => {
         email,
         password: hash,
       })
-        .then((newUser) => res.status(CREATED_CODE).send({ data: newUser }))
+        .then((newUser) => res.status(CREATED_CODE).send(newUser))
         .catch((err) => {
           if (err.code === 11000) {
             return next(new ConflictErr('The user with this email is already registered'));
@@ -72,6 +74,17 @@ const getCurrentUser = (req, res, next) => {
     })
     .catch(next);
 };
+
+// const getCurrentUser = (req, res, next) => {
+//   User.findById(req.user._id)
+//     .then((user) => {
+//       if (!user) {
+//         throw new NotFoundErr('Пользователь с указанным _id не найден');
+//       }
+//       res.send({ data: user });
+//     })
+//     .catch(next);
+// };
 
 const updateUser = (req, res, next) => {
   const { name, about } = req.body;
@@ -116,7 +129,7 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       res.cookie('token', token, {
         maxAge: 3600000,
         httpOnly: true,
@@ -125,6 +138,41 @@ const login = (req, res, next) => {
     })
     .catch(next);
 };
+
+// const login = async (req, res, next) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     const user = await User.findUserByCredentials(email, password);
+
+//     const token = jwt.sign(
+//       { _id: user._id },
+//       NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+//       { expiresIn: '7d' },
+//     );
+
+//     res.cookie('token', token, {
+//       maxAge: 3600000,
+//       httpOnly: true,
+//       sameSite: true,
+//     }).send({ token });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+// const login = (req, res, next) => {
+//   const { email, password } = req.body;
+
+//   return User.findUserByCredentials(email, password)
+//     .then((user) => {
+//       // создадим токен
+//       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+//       // вернём токен
+//       res.send({ token });
+//     })
+//     .catch(next);
+// };
 
 module.exports = {
   getAllUsers,
