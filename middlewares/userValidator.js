@@ -1,5 +1,5 @@
 const { Joi, celebrate } = require('celebrate');
-const { regExpUrl, regExpEmail } = require('../utils/constants');
+const { regExpUrl } = require('../utils/constants');
 
 const validateUserUpdate = celebrate({
   body: Joi.object().keys({
@@ -25,14 +25,14 @@ const validateSignup = celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(regExpUrl),
-    email: Joi.string().required().pattern(regExpEmail),
+    email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
 });
 
 const validateSignin = celebrate({
   body: Joi.object().keys({
-    email: Joi.string().email().required().pattern(regExpEmail),
+    email: Joi.string().email().required().email(),
     password: Joi.string().required(),
   }),
 });
