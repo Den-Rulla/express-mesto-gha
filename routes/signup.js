@@ -1,8 +1,8 @@
-const signupRouter = require('express').Router();
+const signUpRouter = require('express').Router();
 
 const { createUser } = require('../controllers/users');
-// const { validateSignup } = require('../middlewares/userValidator');
+const { validateSignUp } = require('../middlewares/userValidator');
 
-signupRouter.post('/signup', createUser);
+signUpRouter.post('/signup', validateSignUp, createUser);
 
-module.exports = signupRouter;
+module.exports = signUpRouter;

@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const { INTERNAL_SERVER_ERROR } = require('./utils/constants');
@@ -17,6 +18,7 @@ mongoose
 
 const app = express();
 
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

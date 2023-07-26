@@ -9,8 +9,6 @@ const NotFoundErr = require('../errors/NotFoundErr');
 const BadRequestErr = require('../errors/BadRequestErr');
 const ConflictErr = require('../errors/ConflictErr');
 
-// const { NODE_ENV, JWT_SECRET } = process.env;
-
 const getAllUsers = (req, res, next) => User.find({})
   .then((users) => res.status(OK_CODE).send(users))
   .catch(next);
@@ -58,7 +56,7 @@ const getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequestErr('Bad request'));
+        return next(new BadRequestErr('Bad request. Incorrect id'));
       }
       return next(err);
     });
@@ -74,17 +72,6 @@ const getCurrentUser = (req, res, next) => {
     })
     .catch(next);
 };
-
-// const getCurrentUser = (req, res, next) => {
-//   User.findById(req.user._id)
-//     .then((user) => {
-//       if (!user) {
-//         throw new NotFoundErr('Пользователь с указанным _id не найден');
-//       }
-//       res.send({ data: user });
-//     })
-//     .catch(next);
-// };
 
 const updateUser = (req, res, next) => {
   const { name, about } = req.body;
@@ -138,41 +125,6 @@ const login = (req, res, next) => {
     })
     .catch(next);
 };
-
-// const login = async (req, res, next) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     const user = await User.findUserByCredentials(email, password);
-
-//     const token = jwt.sign(
-//       { _id: user._id },
-//       NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-//       { expiresIn: '7d' },
-//     );
-
-//     res.cookie('token', token, {
-//       maxAge: 3600000,
-//       httpOnly: true,
-//       sameSite: true,
-//     }).send({ token });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
-// const login = (req, res, next) => {
-//   const { email, password } = req.body;
-
-//   return User.findUserByCredentials(email, password)
-//     .then((user) => {
-//       // создадим токен
-//       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-//       // вернём токен
-//       res.send({ token });
-//     })
-//     .catch(next);
-// };
 
 module.exports = {
   getAllUsers,
