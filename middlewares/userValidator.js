@@ -32,7 +32,7 @@ const validateSignup = celebrate({
 
 const validateSignin = celebrate({
   body: Joi.object().keys({
-    email: Joi.string().email().required(),
+    email: Joi.string().email().required().pattern(regExpEmail),
     password: Joi.string().required(),
   }),
 });
