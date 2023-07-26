@@ -20,7 +20,7 @@ const validateUserId = celebrate({
   }),
 });
 
-const validateSignUp = celebrate({
+const validateSignup = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
@@ -30,7 +30,7 @@ const validateSignUp = celebrate({
   }),
 });
 
-const validateSignIn = celebrate({
+const validateSignin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
@@ -38,8 +38,8 @@ const validateSignIn = celebrate({
 });
 
 module.exports = {
-  validateSignUp,
-  validateSignIn,
+  validateSignup,
+  validateSignin,
   validateUserUpdate,
   validateAvatarUpdate,
   validateUserId,
