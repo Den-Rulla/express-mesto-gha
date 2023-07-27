@@ -3,14 +3,14 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
-const { INTERNAL_SERVER_ERROR } = require('./utils/constants');
+const errorHandler = require('./middlewares/error-handler');
 
 const routes = require('./routes/index');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017/mestodb')
+  .connect(DB_URL)
   .then(() => {
     console.log('connected to db');
   })
@@ -26,17 +26,7 @@ app.use(routes);
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  const { statusCode = INTERNAL_SERVER_ERROR, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === INTERNAL_SERVER_ERROR
-        ? 'Internal Server Error'
-        : message,
-    });
-  next();
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
